@@ -5,7 +5,8 @@ namespace Mirror
     // [RequireComponent(typeof(Rigidbody))] <- OnValidate ensures this is on .target
     public class NetworkRigidbodyReliable : NetworkTransformReliable
     {
-        bool clientAuthority => syncDirection == SyncDirection.ClientToServer;
+        new bool clientAuthority =>
+            syncDirection == SyncDirection.ClientToServer;
 
         Rigidbody rb;
         bool wasKinematic;

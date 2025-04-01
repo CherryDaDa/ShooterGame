@@ -10,7 +10,7 @@ namespace Mirror.Weaver
     {
         public MethodReference ScriptableObjectCreateInstanceMethod;
 
-        public FieldReference NetworkBehaviourDirtyBitsReference;
+        public MethodReference NetworkBehaviourDirtyBitsReference;
         public MethodReference GetWriterReference;
         public MethodReference ReturnWriterReference;
 
@@ -90,7 +90,7 @@ namespace Mirror.Weaver
 
             TypeReference NetworkBehaviourType = Import<NetworkBehaviour>();
 
-            NetworkBehaviourDirtyBitsReference = Resolvers.ResolveField(NetworkBehaviourType, assembly, Log, "syncVarDirtyBits", ref WeavingFailed);
+            NetworkBehaviourDirtyBitsReference = Resolvers.ResolveProperty(NetworkBehaviourType, assembly, "syncVarDirtyBits");
 
             generatedSyncVarSetter = Resolvers.ResolveMethod(NetworkBehaviourType, assembly, Log, "GeneratedSyncVarSetter", ref WeavingFailed);
             generatedSyncVarSetter_GameObject = Resolvers.ResolveMethod(NetworkBehaviourType, assembly, Log, "GeneratedSyncVarSetter_GameObject", ref WeavingFailed);

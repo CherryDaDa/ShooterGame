@@ -72,7 +72,7 @@ namespace Mirror
         }
 
         [ServerCallback]
-        public override void ResetState()
+        public override void Reset()
         {
             lastRebuildTime = 0D;
         }

@@ -93,8 +93,9 @@ namespace Mirror
         // for example: main player & pets are owned. monsters & npcs aren't.
         public bool isOwned { get; internal set; }
 
-        // internal so NetworkManager can reset it from StopClient.
-        internal bool clientStarted;
+        // Deprecated 2022-10-13
+        [Obsolete(".hasAuthority was renamed to .isOwned. This is easier to understand and prepares for SyncDirection, where there is a difference betwen isOwned and authority.")]
+        public bool hasAuthority => isOwned;
 
         /// <summary>The set of network connections (players) that can see this object.</summary>
         public readonly Dictionary<int, NetworkConnectionToClient> observers =
@@ -114,7 +115,7 @@ namespace Mirror
         //
         // it's also easier to work with for serialization etc.
         // serialized and visible in inspector for easier debugging
-        [SerializeField, HideInInspector] uint _assetId;
+        [SerializeField] uint _assetId;
 
         // The AssetId trick:
         //   Ideally we would have a serialized 'Guid m_AssetId' but Unity can't
@@ -197,18 +198,10 @@ namespace Mirror
         // ForceHidden = useful to hide monsters while they respawn etc.
         // ForceShown = useful to have score NetworkIdentities that always broadcast
         //              to everyone etc.
+        //
+        // TODO rename to 'visibility' after removing .visibility some day!
         [Tooltip("Visibility can overwrite interest management. ForceHidden can be useful to hide monsters while they respawn. ForceShown can be useful for score NetworkIdentities that should always broadcast to everyone in the world.")]
-        [FormerlySerializedAs("visible")]
-        public Visibility visibility = Visibility.Default;
-
-        // Deprecated 2024-01-21
-        [HideInInspector]
-        [Obsolete("Deprecated - Use .visibility instead. This will be removed soon.")]
-        public Visibility visible
-        {
-            get => visibility;
-            set => visibility = value;
-        }
+        public Visibility visible = Visibility.Default;
 
         // broadcasting serializes all entities around a player for each player.
         // we don't want to serialize one entity twice in the same tick.
@@ -383,7 +376,7 @@ namespace Mirror
             {
                 // always log the next child component so it's easy to fix.
                 // if there are multiple, then after removing it'll log the next.
-                Debug.LogError($"'{name}' has another NetworkIdentity component on '{identities[1].name}'. There should only be one NetworkIdentity, and it must be on the root object. Please remove the other one.", this);
+                Debug.LogError($"'{name}' has another NetworkIdentity component on '{identities[1].name}'. There should only be one NetworkIdentity, and it must be on the root object. Please remove the other one.");
             }
         }
 
@@ -718,6 +711,7 @@ namespace Mirror
             }
         }
 
+        bool clientStarted;
         internal void OnStartClient()
         {
             if (clientStarted) return;
@@ -1294,7 +1288,7 @@ namespace Mirror
         // the identity during destroy as people might want to be able to read
         // the members inside OnDestroy(), and we have no way of invoking reset
         // after OnDestroy is called.
-        internal void ResetState()
+        internal void Reset()
         {
             hasSpawned = false;
             clientStarted = false;

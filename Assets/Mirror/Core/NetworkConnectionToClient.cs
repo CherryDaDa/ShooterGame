@@ -20,6 +20,10 @@ namespace Mirror
         // TODO move to server's NetworkConnectionToClient?
         public readonly HashSet<NetworkIdentity> observing = new HashSet<NetworkIdentity>();
 
+        // Deprecated 2022-10-13
+        [Obsolete(".clientOwnedObjects was renamed to .owned :)")]
+        public HashSet<NetworkIdentity> clientOwnedObjects => owned;
+
         // unbatcher
         public Unbatcher unbatcher = new Unbatcher();
 
@@ -128,8 +132,7 @@ namespace Mirror
                 // TODO it would be safer for the server to store the last N
                 // messages' timestamp and only send a message number.
                 // This way client's can't just modify the timestamp.
-                // predictedTime parameter is 0 because the server doesn't predict.
-                NetworkPingMessage pingMessage = new NetworkPingMessage(NetworkTime.localTime, 0);
+                NetworkPingMessage pingMessage = new NetworkPingMessage(NetworkTime.localTime);
                 Send(pingMessage, Channels.Unreliable);
                 lastPingTime = NetworkTime.localTime;
             }

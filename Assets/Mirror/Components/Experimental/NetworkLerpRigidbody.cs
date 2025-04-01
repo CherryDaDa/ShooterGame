@@ -38,15 +38,8 @@ namespace Mirror.Experimental
         protected override void OnValidate()
         {
             base.OnValidate();
-            Reset();
-        }
-
-        public virtual void Reset()
-        {
             if (target == null)
                 target = GetComponent<Rigidbody>();
-
-            syncDirection = SyncDirection.ClientToServer;
         }
 
         void Update()

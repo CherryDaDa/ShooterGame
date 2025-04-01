@@ -10,6 +10,8 @@ namespace Mirror.Weaver
     // not static, because ILPostProcessor is multithreaded
     internal class Weaver
     {
+        public const string InvokeRpcPrefix = "InvokeUserCode_";
+
         // generated code class
         public const string GeneratedCodeNamespace = "Mirror";
         public const string GeneratedCodeClassName = "GeneratedNetworkCode";

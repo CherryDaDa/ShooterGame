@@ -7,7 +7,7 @@ namespace Mirror.SimpleWeb
 {
     internal static class SimpleWebJSLib
     {
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")]
         internal static extern bool IsConnected(int index);
 

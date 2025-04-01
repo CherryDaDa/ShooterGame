@@ -8,6 +8,10 @@ namespace Mirror
     [AddComponentMenu("Network/Network Transform (Reliable)")]
     public class NetworkTransformReliable : NetworkTransformBase
     {
+        [Header("Sync Only If Changed")]
+        [Tooltip("When true, changes are not sent unless greater than sensitivity values below.")]
+        public bool onlySyncOnChange = true;
+
         uint sendIntervalCounter = 0;
         double lastSendIntervalTime = double.MinValue;
 
@@ -17,6 +21,8 @@ namespace Mirror
         [Header("Rotation")]
         [Tooltip("Sensitivity of changes needed before an updated state is sent over the network")]
         public float rotationSensitivity = 0.01f;
+        [Tooltip("Apply smallest-three quaternion compression. This is lossy, you can disable it if the small rotation inaccuracies are noticeable in your project.")]
+        public bool compressRotation = false;
 
         // delta compression is capable of detecting byte-level changes.
         // if we scale float position to bytes,
@@ -399,12 +405,9 @@ namespace Mirror
             );
         }
 
-        // reset state for next session.
-        // do not ever call this during a session (i.e. after teleport).
-        // calling this will break delta compression.
-        public override void ResetState()
+        public override void Reset()
         {
-            base.ResetState();
+            base.Reset();
 
             // reset delta
             lastSerializedPosition = Vector3Long.zero;
